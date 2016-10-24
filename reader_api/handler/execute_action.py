@@ -9,15 +9,14 @@ import requests
 import traceback
 import jwt
 
+import os
+from os.path import join as pth_join
+
 import reader_api.config as config
 from reader_api.logging_utils import get_logger
 from reader_api import token_generator
 
 logger = get_logger(__name__)
-
-CLIENT_ID = config.get('feeds_client_id')
-CLIENT_SECRET = config.get('feeds_client_secret')
-TOKEN_SECRET = config.get('token_secret')
 
 API_URL = 'https://app.keendly.com/'
 SELF_URL = 'http://localhost:5000/execute?action='
@@ -27,7 +26,6 @@ TOKEN_EXPIRATION_TIME = 2
 # actions
 MARK_AS_READ = 'r'
 MARK_AS_UNREAD = 'u'
-GENERATE = 'g'
 
 # fields
 ACTION = 'a'
@@ -36,9 +34,14 @@ ARTICLE_ID = 'i'
 USER_ID = 'u'
 
 def handle(event):
+    global CLIENT_ID, CLIENT_SECRET, TOKEN_SECRET
+    CLIENT_ID = config.get('feeds_client_id')
+    CLIENT_SECRET = config.get('feeds_client_secret')
+    TOKEN_SECRET = config.get('token_secret')
+
     try:
         try:
-            token = event['action']
+            token = event['token']
             payload = token_generator.decode(token)
             if payload[ACTION] == MARK_AS_READ:
                 logger.info('Mark read request', extra={'event': 'mark-read'})
@@ -145,7 +148,8 @@ def generate_user_token(user_id):
     return jwt.encode(payload, CLIENT_SECRET, algorithm='HS256')
 
 def render_template(template_file, **kwargs):
-    with open('templates/' + template_file, 'r') as f:
+
+    with open(pth_join(os.path.dirname(__file__), '..', '..', 'templates', template_file), 'r') as f:
         template = Template(f.read())
         content = template.render(kwargs)
         return {

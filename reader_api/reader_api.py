@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from handler import execute_action_handler, generate_tokens_handler
+from handler import execute_action, generate_tokens
 
 def handle(event):
-    if 'action' in event:
+    if 'token' in event:
         # execute API action
-        return execute_action_handler.handle(event)
+        return execute_action.handle(event)
     else:
         # generate API action links
-        return generate_tokens_handler.handle(event)
+        return generate_tokens.handle(event)
