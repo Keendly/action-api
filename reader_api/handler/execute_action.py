@@ -15,23 +15,14 @@ from os.path import join as pth_join
 import reader_api.config as config
 from reader_api.logging_utils import get_logger
 from reader_api import token_generator
+from reader_api.handler.constants import OPERATION, TITLE, ARTICLE_ID, USER_ID, MARK_AS_READ, MARK_AS_UNREAD
 
 logger = get_logger(__name__)
 
 API_URL = 'https://app.keendly.com/'
-SELF_URL = 'http://localhost:5000/execute?action='
 
 TOKEN_EXPIRATION_TIME = 2
 
-# actions
-MARK_AS_READ = 'r'
-MARK_AS_UNREAD = 'u'
-
-# fields
-ACTION = 'a'
-TITLE = 't'
-ARTICLE_ID = 'i'
-USER_ID = 'u'
 
 def handle(event):
     global CLIENT_ID, CLIENT_SECRET, TOKEN_SECRET
@@ -41,13 +32,13 @@ def handle(event):
 
     try:
         try:
-            token = event['token']
+            token = event['action']
             payload = token_generator.decode(token)
-            if payload[ACTION] == MARK_AS_READ:
+            if payload[OPERATION] == MARK_AS_READ:
                 logger.info('Mark read request', extra={'event': 'mark-read'})
                 mark_read(user_id=payload[USER_ID], article_id=payload[ARTICLE_ID])
-                return render_template('marked-read.html', title=payload['t'], unread_link=generate_link(payload, MARK_AS_UNREAD))
-            elif payload[ACTION] == MARK_AS_UNREAD:
+                return render_template('marked-read.html', title=payload[TITLE], unread_link=generate_link(payload, MARK_AS_UNREAD))
+            elif payload[OPERATION] == MARK_AS_UNREAD:
                 logger.info('Keep unread request', extra={'event': 'keep-unread'})
                 keep_unread(user_id=payload[USER_ID], article_id=payload[ARTICLE_ID])
                 return render_template('marked-unread.html', title=payload[TITLE], read_link=generate_link(payload, MARK_AS_READ))
@@ -105,23 +96,6 @@ def keep_unread(article_id, user_id):
         print 'Error trying to mark as not read: {}, response: {}'.format(r.status_code, r.text)
         raise Exception('Error')
 
-
-def generate_link(payload, action):
-    payload[ACTION] = action
-    token = token_generator.encode(payload)
-    return SELF_URL + token
-
-
-def generate_token(user_id, article_id, title, action):
-    payload = {
-        'exp': datetime.datetime.utcnow() + datetime.timedelta(days=2),
-        'u': user_id,
-        'id': article_id,
-        't': title,
-        'a': action
-    }
-
-    return jwt.encode(payload, TOKEN_SECRET, algorithm='HS256')
 
 def authenticate_user(user_id):
     request = {

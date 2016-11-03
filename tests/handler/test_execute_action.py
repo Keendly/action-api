@@ -10,7 +10,7 @@ import reader_api.token_generator as generator
 
 import responses
 from reader_api.handler import execute_action as handler
-from reader_api.handler.execute_action import ACTION, TITLE, ARTICLE_ID, USER_ID, MARK_AS_READ, MARK_AS_UNREAD
+from reader_api.handler.constants import OPERATION, TITLE, ARTICLE_ID, USER_ID, MARK_AS_READ, MARK_AS_UNREAD
 
 
 class TestExecuteActionHandler(unittest.TestCase):
@@ -27,7 +27,7 @@ class TestExecuteActionHandler(unittest.TestCase):
         # given
         auth_token = 'my_auth_token'
         action_token = generator.encode({
-            ACTION: MARK_AS_READ,
+            OPERATION: MARK_AS_READ,
             TITLE: 'my awesome article',
             ARTICLE_ID: 123,
             USER_ID: 431
@@ -73,7 +73,7 @@ class TestExecuteActionHandler(unittest.TestCase):
         # given
         auth_token = 'my_auth_token'
         action_token = generator.encode({
-            ACTION: MARK_AS_READ,
+            OPERATION: MARK_AS_READ,
             TITLE: 'my awesome article',
             ARTICLE_ID: 123,
             USER_ID: 431
@@ -104,7 +104,7 @@ class TestExecuteActionHandler(unittest.TestCase):
         # given
         auth_token = 'my_auth_token'
         action_token = generator.encode({
-            ACTION: MARK_AS_UNREAD,
+            OPERATION: MARK_AS_UNREAD,
             TITLE: 'my awesome article',
             ARTICLE_ID: 123,
             USER_ID: 431
@@ -149,7 +149,7 @@ class TestExecuteActionHandler(unittest.TestCase):
         generator.TOKEN_EXPIRATION_IN_SECONDS = 1
         auth_token = 'my_auth_token'
         action_token = generator.encode({
-            ACTION: MARK_AS_READ,
+            OPERATION: MARK_AS_READ,
             TITLE: 'my awesome article',
             ARTICLE_ID: 123,
             USER_ID: 431
