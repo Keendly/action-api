@@ -16,6 +16,7 @@ import reader_api.config as config
 from reader_api.logging_utils import get_logger
 from reader_api import token_generator
 from reader_api.handler.constants import OPERATION, TITLE, ARTICLE_ID, USER_ID, MARK_AS_READ, MARK_AS_UNREAD
+from reader_api.config import ACTION_PARAM, SELF_URL
 
 logger = get_logger(__name__)
 
@@ -32,16 +33,16 @@ def handle(event):
 
     try:
         try:
-            token = event['action']
+            token = event[ACTION_PARAM]
             payload = token_generator.decode(token)
             if payload[OPERATION] == MARK_AS_READ:
                 logger.info('Mark read request', extra={'event': 'mark-read'})
                 mark_read(user_id=payload[USER_ID], article_id=payload[ARTICLE_ID])
-                return render_template('marked-read.html', title=payload[TITLE], unread_link=generate_link(payload, MARK_AS_UNREAD))
+                return render_template('marked-read.html', title=payload[TITLE], unread_link=generate_new_link(payload, MARK_AS_UNREAD))
             elif payload[OPERATION] == MARK_AS_UNREAD:
                 logger.info('Keep unread request', extra={'event': 'keep-unread'})
                 keep_unread(user_id=payload[USER_ID], article_id=payload[ARTICLE_ID])
-                return render_template('marked-unread.html', title=payload[TITLE], read_link=generate_link(payload, MARK_AS_READ))
+                return render_template('marked-unread.html', title=payload[TITLE], read_link=generate_new_link(payload, MARK_AS_READ))
             else:
                 return render_template('error.html')
 
@@ -121,8 +122,8 @@ def generate_user_token(user_id):
     }
     return jwt.encode(payload, CLIENT_SECRET, algorithm='HS256')
 
-def render_template(template_file, **kwargs):
 
+def render_template(template_file, **kwargs):
     with open(pth_join(os.path.dirname(__file__), '..', '..', 'templates', template_file), 'r') as f:
         template = Template(f.read())
         content = template.render(kwargs)
@@ -130,3 +131,9 @@ def render_template(template_file, **kwargs):
             'status': 200,
             'content': content
         }
+
+
+def generate_new_link(current_payload, new_operation):
+    current_payload[OPERATION] = new_operation
+    token = token_generator.encode(current_payload)
+    return SELF_URL + token

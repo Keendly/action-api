@@ -8,6 +8,11 @@ Loads config file
 import os
 import yaml
 
+ACTION_PARAM = 'action'
+# TODO fix
+#SELF_URL = 'https://api.keendly.com/reader?action='
+SELF_URL = 'http://localhost:5000/execute?{}='.format(ACTION_PARAM)
+
 config = None
 
 def get(key):

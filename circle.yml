@@ -1,0 +1,25 @@
+machine:
+  python:
+    version: 2.7
+  services:
+    - docker
+
+test:
+  override:
+    - pip install coverage
+    - 'echo feeds_client_id: 1 >> config.yml'
+    - 'echo feeds_client_secret: 2 >> config.yml'
+    - 'echo token_secret: 2 >> config.yml'
+    - nosetests --with-xunit --with-coverage -v --cover-package=reader_api
+  post:
+     - mkdir -p $CIRCLE_TEST_REPORTS/junit/
+     - cp nosetests.xml $CIRCLE_TEST_REPORTS/junit/
+
+deployment:
+  master:
+    branch: master
+    commands:
+      - pip install j2cli
+      - j2 config.yml.j2 > config.yml
+      - pip install git+https://github.com/rackerlabs/lambda-uploader.git
+      - lambda-uploader

@@ -1,0 +1,14 @@
+{
+  "name": "action-api",
+  "description": "Action API",
+  "region": "eu-west-1",
+  "handler": "index.handle",
+  "role": "arn:aws:iam::625416862388:role/lambda_s3_exec_role",
+  "ignore": [
+    ".git",
+    "/*.pyc",
+    ".idea/*"
+  ],
+  "timeout": 30,
+  "memory": 128
+}

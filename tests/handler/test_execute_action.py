@@ -46,7 +46,7 @@ class TestExecuteActionHandler(unittest.TestCase):
 
         # when
         ret = handler.handle({
-            'token': action_token
+            'action': action_token
         })
 
         # then
@@ -92,7 +92,7 @@ class TestExecuteActionHandler(unittest.TestCase):
 
         # when
         ret = handler.handle({
-            'token': action_token
+            'action': action_token
         })
 
         # then
@@ -123,7 +123,7 @@ class TestExecuteActionHandler(unittest.TestCase):
 
         # when
         ret = handler.handle({
-            'token': action_token
+            'action': action_token
         })
 
         # then
@@ -144,6 +144,7 @@ class TestExecuteActionHandler(unittest.TestCase):
         self.assertEqual(200, ret['status'])
         self.assertTrue('successfully' in ret['content'])
         self.assertTrue('my awesome article' in ret['content'])
+
     def test_handle_token_expired(self):
         # given
         generator.TOKEN_EXPIRATION_IN_SECONDS = 1
@@ -169,7 +170,7 @@ class TestExecuteActionHandler(unittest.TestCase):
         # when
         time.sleep(2) # wait for token to expire
         ret = handler.handle({
-            'token': action_token
+            'action': action_token
         })
 
         # then
@@ -188,7 +189,7 @@ class TestExecuteActionHandler(unittest.TestCase):
 
         # when
         ret = handler.handle({
-            'token': 'some completely wrong token'
+            'action': 'some completely wrong token'
         })
 
         # then

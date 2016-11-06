@@ -39,12 +39,13 @@ class TestGenerateLinksHandler(unittest.TestCase):
                 }
             ]
         }
+        self.generator.encode.return_value = 'a'
 
         # when
         links = handler.handle(event)
 
         # then
         # check token generator got called
-        self.assertTrue(self.generator.called)
-        # assert links returned in order
+        self.assertTrue(self.generator.encode.called)
+        self.assertEqual(2, len(links))
 
