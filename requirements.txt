@@ -4,3 +4,4 @@ pyjwt
 jinja2
 responses
 PyYaml
+python-json-logger
