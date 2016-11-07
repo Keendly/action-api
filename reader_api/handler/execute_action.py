@@ -57,7 +57,6 @@ def handle(event):
 
 
 def mark_read(article_id, user_id):
-    print user_id
     user_token = authenticate_user(user_id)
     if user_token is None:
         return
