@@ -46,7 +46,9 @@ class TestExecuteActionHandler(unittest.TestCase):
 
         # when
         ret = handler.handle({
-            'action': action_token
+            'queryStringParameters': {
+                'action': action_token
+            }
         })
 
         # then
@@ -64,9 +66,9 @@ class TestExecuteActionHandler(unittest.TestCase):
         self.assertEqual([123], json.loads(responses.calls[1].request.body))
 
         # check return content
-        self.assertEqual(200, ret['status'])
-        self.assertTrue('successfully' in ret['content'])
-        self.assertTrue('my awesome article' in ret['content'])
+        self.assertEqual(200, ret['statusCode'])
+        self.assertTrue('successfully' in ret['body'])
+        self.assertTrue('my awesome article' in ret['body'])
 
     @responses.activate
     def test_handle_mark_read_error(self):
@@ -92,12 +94,14 @@ class TestExecuteActionHandler(unittest.TestCase):
 
         # when
         ret = handler.handle({
-            'action': action_token
+            'queryStringParameters': {
+                'action': action_token
+            }
         })
 
         # then
-        self.assertEqual(200, ret['status'])
-        self.assertTrue('sorry' in ret['content'])
+        self.assertEqual(200, ret['statusCode'])
+        self.assertTrue('sorry' in ret['body'])
 
     @responses.activate
     def test_handle_keep_unread(self):
@@ -123,7 +127,9 @@ class TestExecuteActionHandler(unittest.TestCase):
 
         # when
         ret = handler.handle({
-            'action': action_token
+            'queryStringParameters': {
+                'action': action_token
+            }
         })
 
         # then
@@ -141,9 +147,9 @@ class TestExecuteActionHandler(unittest.TestCase):
         self.assertEqual([123], json.loads(responses.calls[1].request.body))
 
         # check return content
-        self.assertEqual(200, ret['status'])
-        self.assertTrue('successfully' in ret['content'])
-        self.assertTrue('my awesome article' in ret['content'])
+        self.assertEqual(200, ret['statusCode'])
+        self.assertTrue('successfully' in ret['body'])
+        self.assertTrue('my awesome article' in ret['body'])
 
     def test_handle_token_expired(self):
         # given
@@ -170,12 +176,14 @@ class TestExecuteActionHandler(unittest.TestCase):
         # when
         time.sleep(2) # wait for token to expire
         ret = handler.handle({
-            'action': action_token
+            'queryStringParameters': {
+                'action': action_token
+            }
         })
 
         # then
-        self.assertEqual(200, ret['status'])
-        self.assertTrue('expired' in ret['content'])
+        self.assertEqual(200, ret['statusCode'])
+        self.assertTrue('expired' in ret['body'])
 
     def test_handle_bad_token(self):
         # given
@@ -189,10 +197,12 @@ class TestExecuteActionHandler(unittest.TestCase):
 
         # when
         ret = handler.handle({
-            'action': 'some completely wrong token'
+            'queryStringParameters': {
+                'action': 'some completely wrong token'
+            }
         })
 
         # then
-        self.assertEqual(200, ret['status'])
-        self.assertTrue('sorry' in ret['content'])
+        self.assertEqual(200, ret['statusCode'])
+        self.assertTrue('sorry' in ret['body'])
 

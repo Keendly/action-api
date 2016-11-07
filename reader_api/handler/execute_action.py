@@ -33,7 +33,7 @@ def handle(event):
 
     try:
         try:
-            token = event[ACTION_PARAM]
+            token = event['queryStringParameters'][ACTION_PARAM]
             payload = token_generator.decode(token)
             if payload[OPERATION] == MARK_AS_READ:
                 logger.info('Mark read request', extra={'event': 'mark-read'})
@@ -128,8 +128,11 @@ def render_template(template_file, **kwargs):
         template = Template(f.read())
         content = template.render(kwargs)
         return {
-            'status': 200,
-            'content': content
+            'statusCode': 200,
+            'headers': {
+                'Content-Type': 'text/html; charset=utf-8'
+            },
+            'body': content
         }
 
 
