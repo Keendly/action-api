@@ -22,6 +22,11 @@ def get(key):
     return config[key]
 
 def load_config():
+    files = [f for f in os.listdir('.') if os.path.isfile(f)]
+    for f in files:
+        print f
+        # do something
+
     config_file = '../config.yml'
     if os.path.isfile(config_file):
         with open(config_file) as f:
