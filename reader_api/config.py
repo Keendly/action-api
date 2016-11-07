@@ -10,8 +10,8 @@ import yaml
 
 ACTION_PARAM = 'action'
 # TODO fix
-#SELF_URL = 'https://api.keendly.com/reader?action='
-SELF_URL = 'http://localhost:5000/execute?{}='.format(ACTION_PARAM)
+#SELF_URL = 'https://api.keendly.com/reader?{}='
+SELF_URL = 'https://amv54jkwba.execute-api.eu-west-1.amazonaws.com/prod?{}='.format(ACTION_PARAM)
 
 config = None
 
