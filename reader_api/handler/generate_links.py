@@ -6,15 +6,23 @@ from reader_api.handler.constants import OPERATION, TITLE, ARTICLE_ID, USER_ID, 
 from reader_api.config import SELF_URL
 
 def handle(event):
-    links = []
-    for article in event['articles']:
-        link = generate_link({
-            TITLE: article['title'],
-            ARTICLE_ID: article['id'],
-            USER_ID: article['user_id'],
-            OPERATION: _translate_operation(article['operation'])
-        })
-        links.append(link)
+    links = {}
+    for id, actions in event['articles'].iteritems():
+        for action in actions:
+            link = generate_link({
+                TITLE: action['title'],
+                ARTICLE_ID: id,
+                USER_ID: action['user_id'],
+                OPERATION: _translate_operation(action['operation'])
+            })
+            res = {
+                'action': action['operation'],
+                'link': link
+            }
+            if id in links:
+                links[id].append(res)
+            else:
+                links[id] = [res]
     return links
 
 
