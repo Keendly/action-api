@@ -12,7 +12,7 @@ def handle(event):
             link = generate_link({
                 TITLE: action['title'],
                 ARTICLE_ID: id,
-                USER_ID: action['user_id'],
+                USER_ID: action['userId'],
                 OPERATION: _translate_operation(action['operation'])
             })
             res = {

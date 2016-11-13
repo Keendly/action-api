@@ -21,14 +21,14 @@ class TestGenerateLinksHandler(unittest.TestCase):
             'articles': {
                 '123': [
                     {
-                        'user_id': 321,
+                        'userId': 321,
                         'title': 'my great article',
                         'operation': 'mark_as_read'
                     }
                 ],
                 '124': [
                     {
-                        'user_id': 421,
+                        'userId': 421,
                         'title': 'my another great article',
                         'operation': 'keep_unread'
                     }
@@ -51,12 +51,12 @@ class TestGenerateLinksHandler(unittest.TestCase):
             'articles': {
                 '123': [
                     {
-                        'user_id': 321,
+                        'userId': 321,
                         'title': 'my great article',
                         'operation': 'mark_as_read'
                     },
                     {
-                        'user_id': 421,
+                        'userId': 421,
                         'title': 'my another great article',
                         'operation': 'keep_unread'
                     }
