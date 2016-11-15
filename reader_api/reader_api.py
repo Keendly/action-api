@@ -11,9 +11,7 @@ def handle(event):
         return execute_action.handle(event)
     else:
         # generate API action links
-        ret =  generate_links.handle(event)
-        print ret
-        return ret
+        return generate_links.handle(event)
 
 
 def is_http(event):
