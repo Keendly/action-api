@@ -11,7 +11,6 @@ def handle(event):
         return execute_action.handle(event)
     else:
         # generate API action links
-        time.sleep(10)
         return generate_links.handle(event)
 
 
