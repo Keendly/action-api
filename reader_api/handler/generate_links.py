@@ -7,7 +7,7 @@ from random import choice
 from string import ascii_uppercase
 import reader_api.token_generator as token_generator
 from reader_api.handler.constants import OPERATION, TITLE, ARTICLE_ID, USER_ID, MARK_AS_READ, MARK_AS_UNREAD, \
-    MARK_AS_READ_TEXT, MARK_AS_UNREAD_TEXT
+    MARK_AS_READ_TEXT, MARK_AS_UNREAD_TEXT, SAVE_ARTICLE, SAVE_TEXT
 from reader_api.config import SELF_URL
 
 # according to http://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dg-limits.html
@@ -21,11 +21,11 @@ def handle(event):
             link = generate_link({
                 TITLE: action['title'],
                 ARTICLE_ID: id,
-                USER_ID: action['userId'],
+                USER_ID: event.get('userId') or action.get('userId'),
                 OPERATION: _translate_operation(action['operation'])
             })
             res = {
-                'action': _to_text(action['operation']),
+                'action': _to_text(action['operation'], event.get('provider')),
                 'link': link
             }
             if id in links:
@@ -56,11 +56,18 @@ def _store_links(bucket, content):
 def _translate_operation(operation):
     if operation == 'mark_as_read':
         return MARK_AS_READ
+    elif operation == 'save_article':
+        return SAVE_ARTICLE
     return MARK_AS_UNREAD
 
-def _to_text(operation):
+def _to_text(operation, provider):
     if operation == 'mark_as_read':
         return MARK_AS_READ_TEXT
+    elif operation == 'save_article':
+        if provider.lower() in SAVE_TEXT:
+            return SAVE_TEXT[provider.lower()]
+        else:
+            return SAVE_TEXT['default']
     return MARK_AS_UNREAD_TEXT
 
 
