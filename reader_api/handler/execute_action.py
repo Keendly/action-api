@@ -15,7 +15,8 @@ from os.path import join as pth_join
 import reader_api.config as config
 from reader_api.logging_utils import get_logger
 from reader_api import token_generator
-from reader_api.handler.constants import OPERATION, TITLE, ARTICLE_ID, USER_ID, MARK_AS_READ, MARK_AS_UNREAD
+from reader_api.handler.constants import OPERATION, TITLE, ARTICLE_ID, USER_ID, MARK_AS_READ, MARK_AS_UNREAD, \
+    SAVE_ARTICLE
 from reader_api.config import ACTION_PARAM, SELF_URL
 
 logger = get_logger(__name__)
@@ -43,6 +44,10 @@ def handle(event):
                 logger.info('Keep unread request', extra={'event': 'keep-unread'})
                 keep_unread(user_id=payload[USER_ID], article_id=payload[ARTICLE_ID])
                 return render_template('marked-unread.html', title=payload[TITLE], read_link=generate_new_link(payload, MARK_AS_READ))
+            elif payload[OPERATION] == SAVE_ARTICLE:
+                logger.info('Save article request', extra={'event': 'save-article'})
+                save_article(user_id=payload[USER_ID], article_id=payload[ARTICLE_ID])
+                return render_template('save-article.html', title=payload[TITLE])
             else:
                 return render_template('error.html')
 
@@ -95,6 +100,28 @@ def keep_unread(article_id, user_id):
         logger.info('Keep unread error', extra={'event': 'keep-unread-error'})
         print 'Error trying to mark as not read: {}, response: {}'.format(r.status_code, r.text)
         raise Exception('Error')
+
+
+def save_article(article_id, user_id):
+    user_token = authenticate_user(user_id)
+    if user_token is None:
+        return
+
+    request = [
+        article_id
+    ]
+
+    r = requests.post(API_URL + "api/feeds/saveArticle",
+                      data=json.dumps(request),
+                      headers={
+                          'Authorization': "Bearer {}".format(user_token),
+                          'Content-Type': 'application/json'
+                      })
+    if r.status_code != requests.codes.ok:
+        logger.info('Save article error', extra={'event': 'save-article-error'})
+        print 'Error trying to save article: {}, response: {}'.format(r.status_code, r.text)
+        raise Exception('Error')
+
 
 
 def authenticate_user(user_id):
