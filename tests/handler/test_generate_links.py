@@ -135,7 +135,7 @@ class TestGenerateLinksHandler(unittest.TestCase):
             USER_ID: 321,
             OPERATION: SAVE_ARTICLE
         })
-        self.assertTrue('Save article', links['links']['123'][0]['action'])
+        self.assertTrue('Click to save article', links['links']['123'][0]['action'])
         self.assertEqual(1, len(links['links']))
         self.assertEqual(1, len(links['links']['123']))
 
@@ -165,6 +165,6 @@ class TestGenerateLinksHandler(unittest.TestCase):
             USER_ID: 321,
             OPERATION: SAVE_ARTICLE
         })
-        self.assertEqual('Star article', links['links']['123'][0]['action'])
+        self.assertEqual('Click to star article', links['links']['123'][0]['action'])
         self.assertEqual(1, len(links['links']))
         self.assertEqual(1, len(links['links']['123']))
