@@ -3,6 +3,7 @@
 
 import json
 import boto3
+import json
 from random import choice
 from string import ascii_uppercase
 import reader_api.token_generator as token_generator
@@ -16,6 +17,10 @@ MAX_RESULT_SIZE = 32000
 
 def handle(event):
     links = {}
+    if 's3Articles' in event:
+        articles = _get_articles('keendly', event['s3Articles'])
+        event['articles'] = json.loads(articles)
+
     for id, actions in event['articles'].iteritems():
         for action in actions:
             link = generate_link({
@@ -52,6 +57,19 @@ def _store_links(bucket, content):
     s3 = boto3.resource('s3')
     s3.Bucket(bucket).put_object(Key=key, Body=content)
     return key
+
+def _get_articles(bucket, key):
+    s3 = boto3.resource('s3')
+    file_name = _random_name()
+    file_path = '/tmp/' + file_name
+    s3.meta.client.download_file(bucket, key, file_path)
+    f = open(file_path, "rb")
+    msg = f.read()
+    f.close()
+    return msg
+
+def _random_name():
+    return ''.join(choice(ascii_uppercase) for i in range(12))
 
 def _translate_operation(operation):
     if operation == 'mark_as_read':
