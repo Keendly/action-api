@@ -17,7 +17,7 @@ MAX_RESULT_SIZE = 32000
 
 def handle(event):
     links = {}
-    if 's3Articles' in event:
+    if event.get('s3Articles') is not None:
         articles = _get_articles('keendly', event['s3Articles'])
         event['articles'] = json.loads(articles)
 
