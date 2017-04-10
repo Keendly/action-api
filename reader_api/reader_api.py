@@ -3,14 +3,13 @@
 
 from handler import execute_action, generate_links
 
-import time
-
 def handle(event):
     if is_http(event):
         # execute API action
         return execute_action.handle(event)
     else:
         # generate API action links
+        print event
         return generate_links.handle(event)
 
 
