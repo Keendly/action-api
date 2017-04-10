@@ -9,7 +9,6 @@ def handle(event):
         return execute_action.handle(event)
     else:
         # generate API action links
-        print event
         return generate_links.handle(event)
 
 

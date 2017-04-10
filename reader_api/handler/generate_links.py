@@ -16,9 +16,11 @@ MAX_RESULT_SIZE = 32000
 
 def handle(event):
     links = {}
-    if event.get('s3Articles') is not None:
-        articles = _get_articles('keendly', event['s3Articles'])
-        event['articles'] = json.loads(articles)
+    if event.get('s3Items') is not None:
+        items = _get_items(event['s3Items']['bucket'], event['s3Items']['key'])
+        event['items'] = json.loads(items)
+
+    print event
 
     for id, actions in event['articles'].iteritems():
         for action in actions:
@@ -57,7 +59,7 @@ def _store_links(bucket, content):
     s3.Bucket(bucket).put_object(Key=key, Body=content)
     return key
 
-def _get_articles(bucket, key):
+def _get_items(bucket, key):
     s3 = boto3.resource('s3')
     file_name = _random_name()
     file_path = '/tmp/' + file_name
