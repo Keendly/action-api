@@ -10,7 +10,6 @@ from reader_api.handler.constants import OPERATION, TITLE, ARTICLE_ID, USER_ID, 
     MARK_AS_READ_TEXT, MARK_AS_UNREAD_TEXT, SAVE_ARTICLE, SAVE_TEXT
 from reader_api.config import SELF_URL
 
-# according to http://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dg-limits.html
 MAX_RESULT_SIZE = 32000
 
 
@@ -20,9 +19,9 @@ def handle(event):
         items = _get_items(event['s3Items']['bucket'], event['s3Items']['key'])
         event['items'] = json.loads(items)
 
-    print event
+    articles = _map_to_articles(event['items'])
 
-    for id, actions in event['articles'].iteritems():
+    for id, actions in articles.iteritems():
         for action in actions:
             link = generate_link({
                 TITLE: action['title'],
@@ -39,19 +38,9 @@ def handle(event):
             else:
                 links[id] = [res]
 
-    if len(json.dumps(links)) > MAX_RESULT_SIZE:
-        js = json.dumps(links)
-        key = _store_links('keendly', js)
-        return {
-            's3Links': {
-                'bucket': 'keendly',
-                'key': key
-            }
-        }
-    else:
-        return {
-            'links': links
-        }
+    js = json.dumps(links)
+    return _store_links('keendly', js)
+
 
 def _store_links(bucket, content):
     key = 'messages/' + ''.join(choice(ascii_uppercase) for i in range(12)) + '.json'
@@ -88,6 +77,24 @@ def _to_text(operation, provider):
         else:
             return SAVE_TEXT['default']
     return MARK_AS_UNREAD_TEXT
+
+
+def _map_to_articles(items):
+    articles = {}
+    for item in items:
+        operations = ['save_article']
+        if not item['markAsRead']:
+            operations.append('mark_as_read')
+
+        for article in item['articles']:
+            links = []
+            for operation in operations:
+                links.append({
+                    'operation': operation,
+                    'title': article['title']
+                })
+            articles[article['id']] = links
+    return articles
 
 
 def generate_link(payload):
