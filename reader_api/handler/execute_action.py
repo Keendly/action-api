@@ -75,7 +75,7 @@ def mark_read(article_id, user_id):
     r = requests.post(API_URL + "/feeds/markArticleRead",
                       data=json.dumps(request),
                       headers={
-                          'Authorization': "Bearer {}".format(user_token),
+                          'Authorization': user_token,
                           'Content-Type': 'application/json'
                       })
     if r.status_code != requests.codes.ok:
@@ -96,7 +96,7 @@ def keep_unread(article_id, user_id):
     r = requests.post(API_URL + "/feeds/markArticleUnread",
                       data=json.dumps(request),
                       headers={
-                          'Authorization': "Bearer {}".format(user_token),
+                          'Authorization': user_token,
                           'Content-Type': 'application/json'
                       })
     if r.status_code != requests.codes.ok:
@@ -117,7 +117,7 @@ def save_article(article_id, user_id):
     r = requests.post(API_URL + "/feeds/saveArticle",
                       data=json.dumps(request),
                       headers={
-                          'Authorization': "Bearer {}".format(user_token),
+                          'Authorization': user_token,
                           'Content-Type': 'application/json'
                       })
     if r.status_code != requests.codes.ok:
