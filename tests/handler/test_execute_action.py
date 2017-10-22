@@ -34,13 +34,8 @@ class TestExecuteActionHandler(unittest.TestCase):
             USER_ID: 431
         })
 
-        responses.add(responses.POST, 'https://app.keendly.com/auth',
-                      json={
-                          "expiresIn": "3600",
-                          "tokeType": "Bearer",
-                          "scope": "read",
-                          "accessToken": auth_token
-                      }, status=200)
+        responses.add(responses.POST, 'https://m1ndoce0cl.execute-api.eu-west-1.amazonaws.com/v1/login',
+                      body=auth_token, status=200)
 
         responses.add(responses.POST, 'https://app.keendly.com/api/feeds/markArticleRead',
                       status=200)
@@ -61,7 +56,8 @@ class TestExecuteActionHandler(unittest.TestCase):
         }, json.loads(responses.calls[0].request.body))
 
         # check returned token used in authorization header
-        self.assertEqual('Bearer ' + auth_token, responses.calls[1].request.headers['Authorization'])
+        self.assertEqual('Bearer ' + auth_token,
+                         responses.calls[1].request.headers['Authorization'])
 
         # check article id passed to mark as read endpoint
         self.assertEqual([123], json.loads(responses.calls[1].request.body))
@@ -82,13 +78,8 @@ class TestExecuteActionHandler(unittest.TestCase):
             USER_ID: 431
         })
 
-        responses.add(responses.POST, 'https://app.keendly.com/auth',
-                      json={
-                          "expiresIn": "3600",
-                          "tokeType": "Bearer",
-                          "scope": "read",
-                          "accessToken": auth_token
-                      }, status=200)
+        responses.add(responses.POST, 'https://m1ndoce0cl.execute-api.eu-west-1.amazonaws.com/v1/login',
+                      body=auth_token, status=200)
 
         responses.add(responses.POST, 'https://app.keendly.com/api/feeds/markArticleRead',
                       status=500)
@@ -115,13 +106,8 @@ class TestExecuteActionHandler(unittest.TestCase):
             USER_ID: 431
         })
 
-        responses.add(responses.POST, 'https://app.keendly.com/auth',
-                      json={
-                          "expiresIn": "3600",
-                          "tokeType": "Bearer",
-                          "scope": "read",
-                          "accessToken": auth_token
-                      }, status=200)
+        responses.add(responses.POST, 'https://m1ndoce0cl.execute-api.eu-west-1.amazonaws.com/v1/login',
+                      body=auth_token, status=200)
 
         responses.add(responses.POST, 'https://app.keendly.com/api/feeds/markArticleUnread',
                       status=200)
@@ -142,7 +128,8 @@ class TestExecuteActionHandler(unittest.TestCase):
         }, json.loads(responses.calls[0].request.body))
 
         # check returned token used in authorization header
-        self.assertEqual('Bearer ' + auth_token, responses.calls[1].request.headers['Authorization'])
+        self.assertEqual('Bearer ' + auth_token,
+                         responses.calls[1].request.headers['Authorization'])
 
         # check article id passed to mark as read endpoint
         self.assertEqual([123], json.loads(responses.calls[1].request.body))
@@ -163,19 +150,14 @@ class TestExecuteActionHandler(unittest.TestCase):
             USER_ID: 431
         })
 
-        responses.add(responses.POST, 'https://app.keendly.com/auth',
-                      json={
-                          "expiresIn": "3600",
-                          "tokeType": "Bearer",
-                          "scope": "read",
-                          "accessToken": auth_token
-                      }, status=200)
+        responses.add(responses.POST, 'https://m1ndoce0cl.execute-api.eu-west-1.amazonaws.com/v1/login',
+                      body=auth_token, status=200)
 
         responses.add(responses.POST, 'https://app.keendly.com/api/feeds/markArticleRead',
                       status=200)
 
         # when
-        time.sleep(2) # wait for token to expire
+        time.sleep(2)  # wait for token to expire
         ret = handler.handle({
             'queryStringParameters': {
                 'action': action_token
@@ -188,13 +170,8 @@ class TestExecuteActionHandler(unittest.TestCase):
 
     def test_handle_bad_token(self):
         # given
-        responses.add(responses.POST, 'https://app.keendly.com/auth',
-                      json={
-                          "expiresIn": "3600",
-                          "tokeType": "Bearer",
-                          "scope": "read",
-                          "accessToken": 'my_auth_token'
-                      }, status=200)
+        responses.add(responses.POST, NEW_API_URL + 'login',
+                      body=token, status=200)
 
         # when
         ret = handler.handle({
@@ -218,13 +195,8 @@ class TestExecuteActionHandler(unittest.TestCase):
             USER_ID: 431
         })
 
-        responses.add(responses.POST, 'https://app.keendly.com/auth',
-                      json={
-                          "expiresIn": "3600",
-                          "tokeType": "Bearer",
-                          "scope": "read",
-                          "accessToken": auth_token
-                      }, status=200)
+        responses.add(responses.POST, 'https://m1ndoce0cl.execute-api.eu-west-1.amazonaws.com/v1/login',
+                      body=auth_token, status=200)
 
         responses.add(responses.POST, 'https://app.keendly.com/api/feeds/saveArticle',
                       status=200)
@@ -245,7 +217,8 @@ class TestExecuteActionHandler(unittest.TestCase):
         }, json.loads(responses.calls[0].request.body))
 
         # check returned token used in authorization header
-        self.assertEqual('Bearer ' + auth_token, responses.calls[1].request.headers['Authorization'])
+        self.assertEqual('Bearer ' + auth_token,
+                         responses.calls[1].request.headers['Authorization'])
 
         # check article id passed to mark as read endpoint
         self.assertEqual([123], json.loads(responses.calls[1].request.body))
