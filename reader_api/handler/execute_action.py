@@ -19,8 +19,7 @@ from reader_api.config import ACTION_PARAM, SELF_URL
 
 logger = get_logger(__name__)
 
-API_URL = 'https://app.keendly.com/'
-NEW_API_URL = 'https://m1ndoce0cl.execute-api.eu-west-1.amazonaws.com/v1'
+API_URL = 'https://m1ndoce0cl.execute-api.eu-west-1.amazonaws.com/v1'
 
 TOKEN_EXPIRATION_TIME = 2
 
@@ -73,7 +72,7 @@ def mark_read(article_id, user_id):
         article_id
     ]
 
-    r = requests.post(API_URL + "api/feeds/markArticleRead",
+    r = requests.post(API_URL + "/feeds/markArticleRead",
                       data=json.dumps(request),
                       headers={
                           'Authorization': "Bearer {}".format(user_token),
@@ -94,7 +93,7 @@ def keep_unread(article_id, user_id):
         article_id
     ]
 
-    r = requests.post(API_URL + "api/feeds/markArticleUnread",
+    r = requests.post(API_URL + "/feeds/markArticleUnread",
                       data=json.dumps(request),
                       headers={
                           'Authorization': "Bearer {}".format(user_token),
@@ -115,7 +114,7 @@ def save_article(article_id, user_id):
         article_id
     ]
 
-    r = requests.post(API_URL + "api/feeds/saveArticle",
+    r = requests.post(API_URL + "/feeds/saveArticle",
                       data=json.dumps(request),
                       headers={
                           'Authorization': "Bearer {}".format(user_token),
@@ -134,7 +133,7 @@ def authenticate_user(user_id):
         'client_id': CLIENT_ID,
         'token': generate_user_token(user_id)
     }
-    r = requests.post(NEW_API_URL + "/login",
+    r = requests.post(API_URL + "/login",
                       data=json.dumps(request),
                       headers={
                           'Content-Type': 'application/json'

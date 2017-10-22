@@ -13,6 +13,8 @@ from reader_api.handler import execute_action as handler
 from reader_api.handler.constants import OPERATION, TITLE, ARTICLE_ID, USER_ID, MARK_AS_READ, MARK_AS_UNREAD, \
     SAVE_ARTICLE
 
+API_URL = 'https://m1ndoce0cl.execute-api.eu-west-1.amazonaws.com/v1'
+
 
 class TestExecuteActionHandler(unittest.TestCase):
 
@@ -34,10 +36,10 @@ class TestExecuteActionHandler(unittest.TestCase):
             USER_ID: 431
         })
 
-        responses.add(responses.POST, 'https://m1ndoce0cl.execute-api.eu-west-1.amazonaws.com/v1/login',
+        responses.add(responses.POST, API_URL + '/login',
                       body=auth_token, status=200)
 
-        responses.add(responses.POST, 'https://app.keendly.com/api/feeds/markArticleRead',
+        responses.add(responses.POST, API_URL + '/feeds/markArticleRead',
                       status=200)
 
         # when
@@ -78,10 +80,10 @@ class TestExecuteActionHandler(unittest.TestCase):
             USER_ID: 431
         })
 
-        responses.add(responses.POST, 'https://m1ndoce0cl.execute-api.eu-west-1.amazonaws.com/v1/login',
+        responses.add(responses.POST, API_URL + '/login',
                       body=auth_token, status=200)
 
-        responses.add(responses.POST, 'https://app.keendly.com/api/feeds/markArticleRead',
+        responses.add(responses.POST, API_URL + '/feeds/markArticleRead',
                       status=500)
 
         # when
@@ -106,10 +108,10 @@ class TestExecuteActionHandler(unittest.TestCase):
             USER_ID: 431
         })
 
-        responses.add(responses.POST, 'https://m1ndoce0cl.execute-api.eu-west-1.amazonaws.com/v1/login',
+        responses.add(responses.POST, API_URL + '/login',
                       body=auth_token, status=200)
 
-        responses.add(responses.POST, 'https://app.keendly.com/api/feeds/markArticleUnread',
+        responses.add(responses.POST, API_URL + '/feeds/markArticleUnread',
                       status=200)
 
         # when
@@ -150,10 +152,10 @@ class TestExecuteActionHandler(unittest.TestCase):
             USER_ID: 431
         })
 
-        responses.add(responses.POST, 'https://m1ndoce0cl.execute-api.eu-west-1.amazonaws.com/v1/login',
+        responses.add(responses.POST, API_URL + '/login',
                       body=auth_token, status=200)
 
-        responses.add(responses.POST, 'https://app.keendly.com/api/feeds/markArticleRead',
+        responses.add(responses.POST, API_URL + '/feeds/markArticleRead',
                       status=200)
 
         # when
@@ -170,8 +172,8 @@ class TestExecuteActionHandler(unittest.TestCase):
 
     def test_handle_bad_token(self):
         # given
-        responses.add(responses.POST, NEW_API_URL + 'login',
-                      body=token, status=200)
+        responses.add(responses.POST, API_URL + '/login',
+                      body='my_auth_token', status=200)
 
         # when
         ret = handler.handle({
@@ -195,10 +197,10 @@ class TestExecuteActionHandler(unittest.TestCase):
             USER_ID: 431
         })
 
-        responses.add(responses.POST, 'https://m1ndoce0cl.execute-api.eu-west-1.amazonaws.com/v1/login',
+        responses.add(responses.POST, API_URL + '/login',
                       body=auth_token, status=200)
 
-        responses.add(responses.POST, 'https://app.keendly.com/api/feeds/saveArticle',
+        responses.add(responses.POST, API_URL + '/feeds/saveArticle',
                       status=200)
 
         # when
